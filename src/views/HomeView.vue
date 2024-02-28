@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import PostcodeInput from '@/components/PostcodeInput.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <PostcodeInput />
   </main>
 </template>
