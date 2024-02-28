@@ -1,18 +1,18 @@
 <template>
   <div class="restaurant-search">
-    <button @click="submitPostcode">Find Restaurants in IG11 7EG</button>
+    <button @click="submitPostcode">Find Restaurants in SE1 9QU.</button>
 
     <p v-if="error" class="error">{{ error }}</p>
 
     <div v-if="restaurants.length > 0">
-      <h2>Restaurants in IG11 7EG:</h2>
+      <h2>Restaurants in SE1 9QU:</h2>
       <ul>
         <li v-for="restaurant in restaurants" :key="restaurant.id">
           {{ restaurant.name }}
         </li>
       </ul>
     </div>
-    <p v-else>No restaurants found for IG11 7EG.</p>
+    <p v-else>No restaurants found for SE1 9QU.</p>
   </div>
 </template>
 
@@ -26,7 +26,7 @@ const { fetchRestaurants } = useRestaurantStore()
 
 const submitPostcode = async () => {
   try {
-    restaurants.value = await fetchRestaurants('useRestaurantStore')
+    restaurants.value = await fetchRestaurants()
   } catch (err) {
     error.value = 'Failed to fetch restaurants'
     console.error(err)
