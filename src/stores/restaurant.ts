@@ -1,10 +1,10 @@
 export const useRestaurantStore = () => {
-  const fetchRestaurants = async () => {
+  const fetchRestaurants = async (postcode: string) => {
     try {
       const apiUrl =
         'https://corsproxy.io/?' +
         encodeURIComponent(
-          'https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode/SE19QU'
+          `https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode/${postcode}`
         )
       const response = await fetch(apiUrl)
 
