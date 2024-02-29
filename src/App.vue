@@ -1,8 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import NavBar from '@/components/NavBar.vue'
+</script>
 
+<script setup lang="ts"></script>
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-    <RouterView />
-  </header>
+  <NavBar />
+  <RouterView />
 </template>
