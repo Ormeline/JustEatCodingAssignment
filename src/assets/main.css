@@ -1,37 +1,118 @@
 body {
+  font-family: Arial, sans-serif;
   margin: 0;
+  padding: 0;
 }
 
-.navbar {
-  text-size-adjust: 100%;
-  font-feature-settings: 'tnum';
-  font-family: Arial, sans-serif;
-  color: #242e30;
-  font-weight: 400;
-  text-rendering: optimizelegibility;
-  -webkit-font-smoothing: antialiased;
-  font-size: 1rem;
-  line-height: 1.5;
-  box-sizing: inherit;
+.header {
+  color: white;
+  text-align: center;
   display: flex;
+  justify-content: space-between;
+}
+
+.header img {
+  max-width: 100%;
+  height: 40px;
+}
+
+.postcode-lookup {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.postcode-lookup input {
+  padding: 10px;
+  margin-right: -4px;
+  border: 2px solid #ff8000;
+  border-right: none;
+  font-size: 16px;
+}
+
+.postcode-lookup button {
+  padding: 12px 20px;
+  background-color: #ff8000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.postcode-lookup button:hover {
+  background-color: #e67e00;
+}
+
+.no-results-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  flex-grow: 1;
-  text-size-adjust: 100%;
-  font-feature-settings: 'tnum';
-  color: #242e30;
-  font-weight: 400;
-  text-rendering: optimizelegibility;
-  -webkit-font-smoothing: antialiased;
-  font-size: 1rem;
-  line-height: 1.5;
-  box-sizing: inherit;
-  background-color: #fff;
-  position: relative;
-  z-index: 100;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  box-shadow:
-    0 8px 8px 0 rgba(0, 0, 0, 0.04),
-    0 8px 20px -3px rgba(0, 0, 0, 0.1),
-    0 4px 8px -2px rgba(0, 0, 0, 0.06);
+  height: calc(100vh - 83px);
+  width: 100%;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  padding: 20px;
+}
+
+.filters-column {
+  width: 25%;
+  padding-right: 20px;
+}
+
+.restaurant-listing {
+  width: 75%;
+}
+
+.filter-section,
+.restaurant-item {
+  background: #fff;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.filters-icon {
+  width: 20px; /* Example size */
+  height: auto;
+  margin-right: 0.5em;
+}
+
+.restaurant-item {
+  display: flex;
+}
+
+.restaurant-item img {
+  border-radius: 5px;
+  padding-right: 30px;
+}
+
+.restaurant-item h3 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.restaurant-item .ratings {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.restaurant-item .details {
+  font-size: 14px;
+  color: #888;
+}
+
+.cuisines {
+  font-style: normal;
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 10px;
 }
