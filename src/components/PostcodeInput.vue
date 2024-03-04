@@ -15,8 +15,26 @@ import { ref, defineEmits } from 'vue'
 const postcode = ref('')
 const emit = defineEmits(['submit-postcode'])
 
+const validateAndCleanPostcode = (postcode: string) => {
+  // Remove non-alphanumeric characters and spaces
+  const cleanedPostcode = postcode.replace(/[^a-zA-Z0-9]/g, '')
+
+  // Regular expression for basic UK postcode validation
+  const ukPostcodeRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][A-Z]{2}$/i
+
+  if (ukPostcodeRegex.test(cleanedPostcode.toUpperCase())) {
+    return cleanedPostcode.toUpperCase()
+  } else {
+    alert('Please enter a valid UK postcode.')
+    return null
+  }
+}
+
 const emitSubmitPostcode = () => {
-  emit('submit-postcode', postcode.value)
+  const validPostcode = validateAndCleanPostcode(postcode.value)
+  if (validPostcode) {
+    emit('submit-postcode', validPostcode)
+  }
 }
 
 const emitClearPostcode = () => {
