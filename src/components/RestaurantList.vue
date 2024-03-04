@@ -79,6 +79,9 @@ watch(
         error.value = 'Failed to fetch restaurants'
         console.error(err)
       }
+    } else {
+      // Clear the restaurants list when postcode is cleared
+      allRestaurants.value = []
     }
   },
   { immediate: true }
