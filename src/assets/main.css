@@ -31,7 +31,19 @@ body {
   font-size: 16px;
 }
 
-.postcode-lookup button {
+.prev-button,
+.next-button {
+  margin-right: 10px;
+}
+
+.filter-button {
+  margin-bottom: 15px;
+}
+
+.postcode-lookup button,
+.filter-button,
+.prev-button,
+.next-button {
   padding: 12px 20px;
   background-color: #ff8000;
   color: white;
@@ -40,7 +52,10 @@ body {
   font-size: 16px;
 }
 
-.postcode-lookup button:hover {
+.postcode-lookup button:hover,
+.filter-button:hover,
+.prev-button:hover,
+.next-button:hover {
   background-color: #e67e00;
 }
 
@@ -69,7 +84,6 @@ body {
   width: 75%;
 }
 
-.filter-section,
 .restaurant-item {
   background: #fff;
   margin-bottom: 20px;
@@ -78,12 +92,6 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
-}
-
-.filters-icon {
-  width: 20px; /* Example size */
-  height: auto;
-  margin-right: 0.5em;
 }
 
 .restaurant-item {
@@ -110,9 +118,35 @@ body {
   color: #888;
 }
 
-.cuisines {
+.cuisines,
+.opening-time {
   font-style: normal;
   font-size: 14px;
   color: #888;
   margin-bottom: 10px;
+}
+
+.filter-options .filter-option {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.filters-icon {
+  width: 20px;
+  height: auto;
+  margin-right: 0.5em;
+}
+
+.filter-heading {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.navigation-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }

@@ -4,17 +4,33 @@
     <div class="container">
       <div class="filters-column">
         <div class="filter-section">
-          <img src="@/assets/filters-icon.svg" alt="Filters" class="filters-icon" />
-          <h3>Filters</h3>
+          <div class="filter-heading">
+            <img src="@/assets/filters-icon.svg" alt="Filters" class="filters-icon" />
+            <h3>Filters</h3>
+          </div>
+          <div><button @click="clearFilters" class="filter-button">Clear Filters</button></div>
+          <div class="filter-options">
+            <div v-for="(filter, key) in filters" :key="key" class="filter-option">
+              <input type="checkbox" :id="`filter-${key}`" v-model="selectedFilters" :value="key" />
+              <label :for="`filter-${key}`">{{ filter.displayName }}</label>
+            </div>
+          </div>
         </div>
       </div>
       <div class="restaurant-listing">
         <div>
-          <h2>{{ allRestaurants.length }} Restaurants in {{ postcode }}</h2>
+          <h2>{{ filteredRestaurants.length }} Restaurants in {{ postcode }}</h2>
         </div>
-        <div v-if="paginatedRestaurants.length > 0" style="margin-bottom: 20px">
-          <button @click="previousPage" :disabled="currentPage <= 1">Previous</button>
-          <button @click="nextPage" :disabled="currentPage >= totalPages">Next</button>
+        <div class="navigation-container">
+          <div>Page {{ currentPage }} of {{ totalPages }}</div>
+          <div v-if="paginatedRestaurants.length > 0">
+            <button class="prev-button" @click="previousPage" :disabled="currentPage <= 1">
+              Previous
+            </button>
+            <button class="next-button" @click="nextPage" :disabled="currentPage >= totalPages">
+              Next
+            </button>
+          </div>
         </div>
         <div
           class="restaurant-item"
@@ -35,11 +51,28 @@
             <div class="details">
               <p>{{ formatAddress(restaurant.address) }}</p>
             </div>
+            <div class="opening-time">
+              <p v-if="isRestaurantOpen(restaurant.deliveryOpeningTimeLocal)">
+                Delivery time is between {{ restaurant.deliveryEtaMinutes.rangeLower }} and
+                {{ restaurant.deliveryEtaMinutes.rangeUpper }} minutes
+              </p>
+              <p v-else>
+                Currently closed. Opens at
+                {{ moment(restaurant.deliveryOpeningTimeLocal).format('MMMM Do YYYY, h:mm:ss a') }}
+              </p>
+            </div>
           </div>
         </div>
-        <div v-if="paginatedRestaurants.length > 0">
-          <button @click="previousPage" :disabled="currentPage <= 1">Previous</button>
-          <button @click="nextPage" :disabled="currentPage >= totalPages">Next</button>
+        <div class="navigation-container">
+          <div>Page {{ currentPage }} of {{ totalPages }}</div>
+          <div v-if="paginatedRestaurants.length > 0">
+            <button class="prev-button" @click="previousPage" :disabled="currentPage <= 1">
+              Previous
+            </button>
+            <button class="next-button" @click="nextPage" :disabled="currentPage >= totalPages">
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -54,47 +87,65 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import moment from 'moment'
 import { useRestaurantStore } from '@/stores/restaurant'
 import type { IRestaurant } from '@/types/restaurant'
+import type { IFilters } from '@/types/filter'
 
 const props = defineProps({
   postcode: String
 })
 
 const allRestaurants = ref<IRestaurant[]>([])
+const filters = ref<IFilters>({})
+const selectedFilters = ref<string[]>([])
 const error = ref('')
 const currentPage = ref(1)
 const itemsPerPage = 10
 
-const { fetchRestaurants } = useRestaurantStore()
+const { fetchRestaurantsAndFilters } = useRestaurantStore()
 
 watch(
   () => props.postcode,
   async (newPostcode) => {
     if (newPostcode) {
       try {
-        allRestaurants.value = await fetchRestaurants(newPostcode)
+        const { restaurants, filters: fetchedFilters } =
+          await fetchRestaurantsAndFilters(newPostcode)
+        allRestaurants.value = restaurants
+        filters.value = fetchedFilters
         currentPage.value = 1
       } catch (err) {
         error.value = 'Failed to fetch restaurants'
         console.error(err)
       }
     } else {
-      // Clear the restaurants list when postcode is cleared
       allRestaurants.value = []
+      filters.value = {}
     }
   },
   { immediate: true }
 )
 
+const filteredRestaurants = computed(() => {
+  if (selectedFilters.value.length === 0) {
+    return allRestaurants.value
+  }
+  return allRestaurants.value.filter((restaurant) =>
+    selectedFilters.value.some((filterKey) =>
+      filters.value[filterKey]?.restaurantIds.includes(restaurant.id)
+    )
+  )
+})
+
 const paginatedRestaurants = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage
   const end = start + itemsPerPage
-  return allRestaurants.value.slice(start, end)
+  return filteredRestaurants.value.slice(start, end)
 })
 
 const totalPages = computed(() => {
-  return Math.ceil(allRestaurants.value.length / itemsPerPage)
+  return Math.ceil(filteredRestaurants.value.length / itemsPerPage)
 })
 
 const nextPage = () => {
@@ -111,6 +162,10 @@ const previousPage = () => {
 
 const formatCuisines = (cuisines: { name: string; uniqueName: string }[]) => {
   return cuisines.map((cuisine) => cuisine.name).join(', ')
+}
+
+const clearFilters = () => {
+  selectedFilters.value = []
 }
 
 function formatAddress(address: any) {
@@ -136,5 +191,11 @@ function formatAddress(address: any) {
   } else {
     return 'Address information not available'
   }
+}
+
+const isRestaurantOpen = (openingTimeLocal: string): boolean => {
+  const currentTime = new Date()
+  const openingTime = new Date(openingTimeLocal)
+  return openingTime.getTime() < currentTime.getTime()
 }
 </script>

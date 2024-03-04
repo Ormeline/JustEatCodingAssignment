@@ -1,5 +1,8 @@
+import type { IRestaurant } from '@/types/restaurant'
+import type { IFilters } from '../types/filter'
+
 export const useRestaurantStore = () => {
-  const fetchRestaurants = async (postcode: string) => {
+  const fetchRestaurantsAndFilters = async (postcode: string) => {
     try {
       const apiUrl = `https://corsproxy.io/?${encodeURIComponent(
         `https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode/${postcode}`
@@ -11,14 +14,17 @@ export const useRestaurantStore = () => {
       }
 
       const data = await response.json()
-      return data.restaurants
+      return {
+        restaurants: data.restaurants as IRestaurant[],
+        filters: data.filters as IFilters
+      }
     } catch (error) {
-      console.error('Failed to fetch restaurants:', error)
-      return []
+      console.error('Failed to fetch restaurants and filters:', error)
+      return { restaurants: [], filters: {} }
     }
   }
 
   return {
-    fetchRestaurants
+    fetchRestaurantsAndFilters
   }
 }
