@@ -1,14 +1,26 @@
 <template>
+  <!-- 
+    Restaurant Listing Component:
+    - Displays error messages and restaurant listings based on the postcode.
+    - Includes filtering functionality for the listed restaurants.
+    - Features pagination controls for navigating through the restaurant list.
+  -->
+  <!-- Error Message Display -->
   <div v-if="error" class="error">{{ error }}</div>
+  <!-- Restaurant Listing Container -->
   <div v-if="allRestaurants.length > 0">
     <div class="container">
+      <!-- Filter Section -->
       <div class="filters-column">
         <div class="filter-section">
+          <!-- Filter Heading -->
           <div class="filter-heading">
             <img src="@/assets/filters-icon.svg" alt="Filters" class="filters-icon" />
             <h3>Filters</h3>
           </div>
+          <!-- Clear Filters Button -->
           <div><button @click="clearFilters" class="filter-button">Clear Filters</button></div>
+          <!-- Filter Options -->
           <div class="filter-options">
             <div v-for="(filter, key) in filters" :key="key" class="filter-option">
               <input type="checkbox" :id="`filter-${key}`" v-model="selectedFilters" :value="key" />
@@ -17,10 +29,13 @@
           </div>
         </div>
       </div>
+      <!-- Restaurant Listing Section -->
       <div class="restaurant-listing">
+        <!-- Total Restaurants Count -->
         <div>
           <h2>{{ filteredRestaurants.length }} Restaurants in {{ postcode }}</h2>
         </div>
+        <!-- Pagination Controls -->
         <div class="navigation-container">
           <div>Page {{ currentPage }} of {{ totalPages }}</div>
           <div v-if="paginatedRestaurants.length > 0">
@@ -32,11 +47,13 @@
             </button>
           </div>
         </div>
+        <!-- Individual Restaurant Items -->
         <div
           class="restaurant-item"
           v-for="restaurant in paginatedRestaurants"
           :key="restaurant.id"
         >
+          <!-- Restaurant Details -->
           <div><img :src="restaurant.logoUrl" alt="Restaurant Name" /></div>
           <div>
             <h3>{{ restaurant.name }}</h3>
@@ -51,6 +68,7 @@
             <div class="details">
               <p>{{ formatAddress(restaurant.address) }}</p>
             </div>
+            <!-- Opening Time -->
             <div class="opening-time">
               <p v-if="isRestaurantOpen(restaurant.deliveryOpeningTimeLocal)">
                 Delivery time is between {{ restaurant.deliveryEtaMinutes.rangeLower }} and
@@ -63,6 +81,7 @@
             </div>
           </div>
         </div>
+        <!-- Pagination Controls (Bottom) -->
         <div class="navigation-container">
           <div>Page {{ currentPage }} of {{ totalPages }}</div>
           <div v-if="paginatedRestaurants.length > 0">
@@ -77,6 +96,7 @@
       </div>
     </div>
   </div>
+  <!-- No Results Messages -->
   <div v-if="allRestaurants.length === 0 && postcode" class="no-results-message">
     No restaurants found. Please try another postcode.
   </div>
@@ -86,6 +106,11 @@
 </template>
 
 <script setup lang="ts">
+// Script for Restaurant Listing Component:
+// - Manages state and data flow for restaurant listings based on provided postcode.
+// - Handles fetching and filtering of restaurant data.
+// - Controls pagination and formatting of restaurant data.
+
 import { ref, computed, watch } from 'vue'
 import moment from 'moment'
 import { useRestaurantStore } from '@/stores/restaurant'
@@ -96,6 +121,7 @@ const props = defineProps({
   postcode: String
 })
 
+// Component state: restaurants, filters, pagination, error handling
 const allRestaurants = ref<IRestaurant[]>([])
 const filters = ref<IFilters>({})
 const selectedFilters = ref<string[]>([])
@@ -105,9 +131,11 @@ const itemsPerPage = 10
 
 const { fetchRestaurantsAndFilters } = useRestaurantStore()
 
+// Watcher for postcode changes
 watch(
   () => props.postcode,
   async (newPostcode) => {
+    // Fetching and setting data based on postcode
     if (newPostcode) {
       try {
         const { restaurants, filters: fetchedFilters } =
@@ -127,6 +155,7 @@ watch(
   { immediate: true }
 )
 
+// Computed properties for filtered and paginated restaurant data
 const filteredRestaurants = computed(() => {
   if (selectedFilters.value.length === 0) {
     return allRestaurants.value
@@ -137,6 +166,8 @@ const filteredRestaurants = computed(() => {
     )
   )
 })
+
+// Pagination control functions
 
 const paginatedRestaurants = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage
@@ -159,6 +190,8 @@ const previousPage = () => {
     currentPage.value--
   }
 }
+
+// Utility functions for formatting data
 
 const formatCuisines = (cuisines: { name: string; uniqueName: string }[]) => {
   return cuisines.map((cuisine) => cuisine.name).join(', ')
@@ -192,6 +225,8 @@ function formatAddress(address: any) {
     return 'Address information not available'
   }
 }
+
+// Function to check restaurant opening status
 
 const isRestaurantOpen = (openingTimeLocal: string): boolean => {
   const currentTime = new Date()

@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils'
 import RestaurantList from '@/components/RestaurantList.vue'
 
 describe('RestaurantList', () => {
-  // Test for rendering
   it('renders correctly', () => {
     const wrapper = mount(RestaurantList, {
       props: {
